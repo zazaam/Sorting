@@ -1,8 +1,16 @@
 package sorting;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class Main {
 
@@ -18,6 +26,14 @@ public class Main {
 		Gui window = new Gui();
 		frame.add(window, BorderLayout.CENTER);
 		
+		JButton nextButton = new JButton("Next");
+		final JButton runButton = new JButton("Run");
+		
+		JPanel buttons = new JPanel();
+		buttons.add(nextButton);
+		buttons.add(runButton);
+		
+		frame.add(buttons, BorderLayout.NORTH);
 		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		frame.setVisible(true);
 		
@@ -26,10 +42,33 @@ public class Main {
 			values[i] = Math.random() * window.getHeight();
 		}
 		
-		Runnable r = new Sorter(values, window);
+		final BlockingQueue<String> commands = new LinkedBlockingQueue<String>();
+		commands.add("Next");
+		
+		Sorter r = new Sorter(values, window, commands);
+		
+		nextButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				commands.add("Next");
+				runButton.setEnabled(true);
+			}
+		});
+		
+		runButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				runButton.setEnabled(false);
+				commands.add("Run");
+				
+			}
+		});
+
 		Thread t = new Thread(r);
 		t.start();
-		System.out.println("Stopped");
+		
 	}
 
 }
