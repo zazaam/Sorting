@@ -22,6 +22,7 @@ public class Gui extends JComponent{
 		}
 		else
 		{
+			
 			Graphics2D g2 = (Graphics2D) g;
 			int width = getWidth() / values.length;
 			for (int i = 0; i < values.length; i++) {
